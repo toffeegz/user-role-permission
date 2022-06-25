@@ -11322,6 +11322,15 @@ __webpack_require__.r(__webpack_exports__);
           xy.error_status = error.response.data.message;
         }
       });
+    },
+    remove: function remove(item, index) {
+      var xy = this;
+      axios["delete"]("/api/users/".concat(item.id)).then(function (response) {
+        // xy.users.splice(index,1);
+        location.reload();
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });

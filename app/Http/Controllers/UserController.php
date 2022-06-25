@@ -51,7 +51,6 @@ class UserController extends Controller
         $data = $user::create($userRequest->all());
         $data->role_name = $data->role->name;
         return response()->json(['message' => 'User has been added successfully', 'data' => $data]);
-        
     }
 
     /**
@@ -96,6 +95,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return response()->json(['message' => 'User has been removed successfully']);
     }
 }

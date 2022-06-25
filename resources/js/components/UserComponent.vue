@@ -147,7 +147,18 @@ import { $dataMetaSchema } from 'ajv';
                         xy.error_status = error.response.data.message;
                     }
                 });
-            }
+            },
+            remove(item,index) {
+                const xy = this;
+                axios.delete(`/api/users/${item.id}`)
+                .then(function (response) {
+                    // xy.users.splice(index,1);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         }
     }
 </script>
