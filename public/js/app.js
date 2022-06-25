@@ -5349,6 +5349,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5372,6 +5379,17 @@ __webpack_require__.r(__webpack_exports__);
       var xy = this;
       axios.post('/api/roles', this.form).then(function (response) {
         xy.roles.push(response.data.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    update: function update() {
+      console.log('update me!');
+    },
+    remove: function remove(item, index) {
+      var xy = this;
+      axios["delete"]("/api/roles/".concat(item.id)).then(function (response) {
+        xy.roles.splice(index, 1);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -28253,13 +28271,30 @@ var render = function () {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.roles, function (item) {
+            _vm._l(_vm.roles, function (item, index) {
               return _c("tr", { key: item.id }, [
                 _c("td", [_vm._v(_vm._s(item.name))]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(item.description))]),
                 _vm._v(" "),
-                _c("td", [_vm._v("action")]),
+                _c("td", {}, [
+                  _c("a", { attrs: { href: "#" }, on: { click: _vm.update } }, [
+                    _c("i", { staticClass: "fa-solid fa-pen text-secondary" }),
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      attrs: { href: "#" },
+                      on: {
+                        click: function ($event) {
+                          return _vm.remove(item, index)
+                        },
+                      },
+                    },
+                    [_c("i", { staticClass: "fa-solid fa-trash text-danger" })]
+                  ),
+                ]),
               ])
             }),
             0

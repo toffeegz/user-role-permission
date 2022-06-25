@@ -13,10 +13,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in roles" :key="item.id">
+                        <tr v-for="(item,index) in roles" :key="item.id">
                             <td>{{ item.name }}</td>
                             <td>{{ item.description }}</td>
-                            <td>action</td>
+                            <td class="">
+                                <a class="" href="#" @click="update">
+                                    <i class="fa-solid fa-pen text-secondary"></i>
+                                </a>
+                                <a class="" href="#" @click="remove(item,index)">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -73,7 +80,20 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            }
+            },
+            update() {
+                console.log('update me!');
+            },
+            remove(item,index) {
+                const xy = this;
+                axios.delete(`/api/roles/${item.id}`)
+                .then(function (response) {
+                    xy.roles.splice(index,1);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         }
     }
 </script>
