@@ -5311,9 +5311,71 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      roles: null,
+      form: {
+        name: null,
+        description: null
+      }
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    var _this = this;
+
+    axios.get('/api/roles') // .then(response => (console.log(response.data)));
+    .then(function (response) {
+      return _this.roles = response.data;
+    });
+  },
+  methods: {
+    submit: function submit() {
+      var xy = this;
+      axios.post('/api/roles', this.form).then(function (response) {
+        xy.roles.push(response.data.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
   }
 });
 
@@ -5330,6 +5392,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -28149,18 +28243,120 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "card mb-4" }, [
+    _c("div", { staticClass: "card-header" }, [_vm._v("Manage Roles")]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body" }, [
+      _c("div", [
+        _c("table", { staticClass: "table" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.roles, function (item) {
+              return _c("tr", { key: item.id }, [
+                _c("td", [_vm._v(_vm._s(item.name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(item.description))]),
+                _vm._v(" "),
+                _c("td", [_vm._v("action")]),
+              ])
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _c("tfoot", [
+            _c("tr", [
+              _c("td", [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.name,
+                        expression: "form.name",
+                      },
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Input role name" },
+                    domProps: { value: _vm.form.name },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "name", $event.target.value)
+                      },
+                    },
+                  }),
+                ]),
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.description,
+                        expression: "form.description",
+                      },
+                    ],
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "text",
+                      placeholder: "Input role description",
+                    },
+                    domProps: { value: _vm.form.description },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "description", $event.target.value)
+                      },
+                    },
+                  }),
+                ]),
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "div",
+                  { staticClass: "form-group d-flex justify-content-center" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary btn-sm",
+                        on: { click: _vm.submit },
+                      },
+                      [_c("i", { staticClass: "fa-solid fa-plus" })]
+                    ),
+                  ]
+                ),
+              ]),
+            ]),
+          ]),
+        ]),
+      ]),
+    ]),
+  ])
 }
 var staticRenderFns = [
   function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card mb-4" }, [
-      _c("div", { staticClass: "card-header" }, [_vm._v("Manage Roles")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _vm._v("\n        I'm an role manager\n    "),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Description")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Action")]),
       ]),
     ])
   },
@@ -28198,7 +28394,53 @@ var staticRenderFns = [
       _c("div", { staticClass: "card-header" }, [_vm._v("Manage Users")]),
       _vm._v(" "),
       _c("div", { staticClass: "card-body" }, [
-        _vm._v("\n        I'm an user manager\n    "),
+        _c("div", [
+          _c("table", { staticClass: "table" }, [
+            _c("thead", [
+              _c("tr", [
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("First")]),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("Last")]),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("Handle")]),
+              ]),
+            ]),
+            _vm._v(" "),
+            _c("tbody", [
+              _c("tr", [
+                _c("th", { attrs: { scope: "row" } }, [_vm._v("1")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("Mark")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("Otto")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("@mdo")]),
+              ]),
+              _vm._v(" "),
+              _c("tr", [
+                _c("th", { attrs: { scope: "row" } }, [_vm._v("2")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("Jacob")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("Thornton")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("@fat")]),
+              ]),
+              _vm._v(" "),
+              _c("tr", [
+                _c("th", { attrs: { scope: "row" } }, [_vm._v("3")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("Larry")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("the Bird")]),
+                _vm._v(" "),
+                _c("td", [_vm._v("@twitter")]),
+              ]),
+            ]),
+          ]),
+        ]),
       ]),
     ])
   },
