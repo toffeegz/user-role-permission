@@ -141,6 +141,7 @@ import { $dataMetaSchema } from 'ajv';
                     xy.form.password_confirmation = null;
                 })
                  .catch(function (error) {
+                    console.log(error.response);
                     if (error.response) {
                         xy.error_messages = error.response.data.errors;
                         xy.error_status = error.response.data.message;
