@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
@@ -33,9 +34,10 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoleRequest $roleRequest, Role $role)
     {
-        //
+        $data = $role::create($roleRequest->all());
+        return response()->json(['message' => 'Role has been added successfully', 'data' => $data]);
     }
 
     /**
@@ -67,9 +69,14 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(RoleRequest $roleRequest, Role $role)
     {
-        //
+        try {
+            $data = $role->update($roleRequest->all());
+            return response()->json(['message' => 'Role has been updated successfully', 'data' => $data]);
+        } catch(\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -80,6 +87,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $role->delete();
+        return response()->json(['message' => 'Role has been removed successfully']);
+
     }
 }
