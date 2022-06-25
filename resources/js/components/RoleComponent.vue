@@ -76,6 +76,8 @@
                 axios.post('/api/roles', this.form)
                 .then(function (response) {
                     xy.roles.push(response.data.data);
+                    xy.form.name = null;
+                    xy.form.description = null;
                 })
                 .catch(function (error) {
                     console.log(error);
