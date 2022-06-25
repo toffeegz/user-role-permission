@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
@@ -14,7 +15,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all());
+        $data = [];
+        $users = User::all();
+        foreach($users as $user)
+        {
+            $data[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role_id' => $user->role_id,
+                'role_name' => $user->role->name,
+            ];
+        }
+        return response()->json($data);
     }
 
     /**
@@ -33,9 +46,14 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $userRequest, User $user)
     {
-        //
+        
+        $data = $user::create($userRequest->all());
+        $data->role_name = $data->role->name;
+
+        return response()->json(['message' => 'User has been added successfully', 'data' => $data]);
+        
     }
 
     /**
