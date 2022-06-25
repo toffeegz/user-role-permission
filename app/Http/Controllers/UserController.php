@@ -46,12 +46,16 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $userRequest, User $user)
+    public function store(Request $request, User $user)
     {
-        
+        $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role_id' => ['required', 'numeric'],
+        ]);
         $data = $user::create($userRequest->all());
         $data->role_name = $data->role->name;
-
         return response()->json(['message' => 'User has been added successfully', 'data' => $data]);
         
     }

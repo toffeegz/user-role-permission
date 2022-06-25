@@ -11263,6 +11263,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -11276,7 +11286,9 @@ __webpack_require__.r(__webpack_exports__);
         password: null,
         password_confirmation: null
       },
-      selectedId: null
+      selectedId: null,
+      error_status: null,
+      error_messages: null
     };
   },
   mounted: function mounted() {
@@ -11303,7 +11315,10 @@ __webpack_require__.r(__webpack_exports__);
         xy.form.password = null;
         xy.form.password_confirmation = null;
       })["catch"](function (error) {
-        console.log(error);
+        if (error.response) {
+          xy.error_messages = error.response.data.errors;
+          xy.error_status = error.response.data.message;
+        }
       });
     }
   }
@@ -36176,6 +36191,30 @@ var render = function () {
             _vm._m(2),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
+              _vm.error_messages
+                ? _c(
+                    "div",
+                    {
+                      staticClass: " alert alert-danger",
+                      attrs: { role: "alert" },
+                    },
+                    [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.error_status)),
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.error_messages, function (error_message) {
+                        return _c("div", { staticClass: "text-danger" }, [
+                          _c("small", [
+                            _c("i", [_vm._v(_vm._s(error_message[0]))]),
+                          ]),
+                        ])
+                      }),
+                    ],
+                    2
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _c("div", [
                 _c("div", { staticClass: "form-group mb-2" }, [
                   _c("label", { attrs: { for: "" } }, [_vm._v("Full Name")]),

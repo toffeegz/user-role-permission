@@ -51,6 +51,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- alert -->
+                        <div class=" alert alert-danger" role="alert" v-if="error_messages">
+                            <p class="text-danger">{{ error_status }}</p>
+                            <div class="text-danger" v-for="error_message in error_messages">
+                                <small><i>{{ error_message[0] }}</i></small> 
+                            </div>
+                        </div>
+
+                        <!-- new user form -->
                         <div>
                             <div class="form-group mb-2">
                                 <label for="">Full Name</label>
@@ -62,7 +71,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="">Assign Role</label>
-                                <select class="form-control" v-model="form.role_id" >
+                                <select class="form-control" v-model="form.role_id">
                                     <option v-for="(item,index) in roles" v-bind:value="item.id">{{ item.name }}</option>
                                 </select>
                             </div>
@@ -76,6 +85,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" @click="submit">Save changes</button>
@@ -102,6 +112,8 @@ import { $dataMetaSchema } from 'ajv';
                     password_confirmation: null,
                 },
                 selectedId: null,
+                error_status: null,
+                error_messages: null,
             }
         },
         mounted() {
@@ -128,8 +140,11 @@ import { $dataMetaSchema } from 'ajv';
                     xy.form.password = null;
                     xy.form.password_confirmation = null;
                 })
-                .catch(function (error) {
-                    console.log(error);
+                 .catch(function (error) {
+                    if (error.response) {
+                        xy.error_messages = error.response.data.errors;
+                        xy.error_status = error.response.data.message;
+                    }
                 });
             }
         }
