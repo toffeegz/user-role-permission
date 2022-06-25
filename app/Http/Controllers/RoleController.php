@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
@@ -33,9 +34,10 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoleRequest $roleRequest, Role $role)
     {
-        //
+        $data = $role::create($roleRequest->all());
+        return response()->json(['message' => 'Role has been added successfully', 'data' => $data]);
     }
 
     /**
