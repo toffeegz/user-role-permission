@@ -1,8 +1,14 @@
 <template>
     <div>
         <div class="card mb-4">
-            <div class="card-header">Manage Roles</div>
-
+            <div class="card-header d-flex justify-content-between">
+                <span>Manage Roles</span>
+                <div class="form-group d-flex justify-content-center">
+                    <button class="btn btn-primary btn-sm" @click="openNewRoleModal()">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
             <div class="card-body">
                 <div>
                     <table class="table">
@@ -27,34 +33,13 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Input role name" v-model="form.name">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Input role description" v-model="form.description">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group d-flex justify-content-center">
-                                        <button class="btn btn-primary btn-sm" @click="submit">
-                                            <i class="fa-solid fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
         
-        <!-- Modal -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- Edit Role Modal -->
+        <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -62,6 +47,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- alert -->
+                        <div class=" alert alert-danger" role="alert" v-if="error_messages">
+                            <p class="text-danger">{{ error_status }}</p>
+                            <div class="text-danger" v-for="error_message in error_messages">
+                                <small><i>{{ error_message[0] }}</i></small> 
+                            </div>
+                        </div>
                         <div>
                             <div class="form-group mb-2">
                                 <label for="">Name</label>
@@ -74,8 +66,44 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" @click="closeEditRoleModal()" >Close</button>
                         <button type="button" class="btn btn-primary" @click="update()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Role Modal -->
+        <div class="modal fade" id="newRoleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">New Role</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- alert -->
+                        <div class=" alert alert-danger" role="alert" v-if="error_messages">
+                            <p class="text-danger">{{ error_status }}</p>
+                            <div class="text-danger" v-for="error_message in error_messages">
+                                <small><i>{{ error_message[0] }}</i></small> 
+                            </div>
+                        </div>
+                        <!-- new role modal body -->
+                        <div>
+                            <div class="form-group mb-2">
+                                <label for="">Name</label>
+                                <input type="text" class="form-control" v-model="form.name">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Description</label>
+                                <input type="text" class="form-control" v-model="form.description">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" @click="submit()">Save</button>
                     </div>
                 </div>
             </div>
@@ -97,6 +125,8 @@
                     description: null,
                 },
                 selectedId: null,
+                error_status: null,
+                error_messages: null,
             }
         },
         mounted() {
@@ -110,12 +140,17 @@
                 const xy = this;
                 axios.post('/api/roles', this.form)
                 .then(function (response) {
+                    $('#newRoleModal').modal('hide');
                     xy.roles.push(response.data.data);
                     xy.form.name = null;
                     xy.form.description = null;
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    console.log(error.response);
+                    if (error.response) {
+                        xy.error_messages = error.response.data.errors;
+                        xy.error_status = error.response.data.message;
+                    }
                 });
             },
             remove(item,index) {
@@ -130,7 +165,7 @@
             },
             edit(item) {
                 const xy = this;
-                $('#editModal').modal('show');
+                $('#editRoleModal').modal('show');
                 xy.formEdit.name = item.name;
                 xy.formEdit.description = item.description;
                 xy.selectedId = item.id;
@@ -143,8 +178,24 @@
                     location.reload();
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    console.log(error.response);
+                    if (error.response) {
+                        xy.error_messages = error.response.data.errors;
+                        xy.error_status = error.response.data.message;
+                    }
                 });
+            },
+            openNewRoleModal () {
+                const xy = this;
+                xy.form.name = null;
+                xy.form.description = null;
+                $('#newRoleModal').modal('show');
+            },
+            closeEditRoleModal() {
+                const xy = this;
+                $('#editRoleModal').modal('hide');
+                xy.error_messages = null;
+                xy.error_status = null;
             }
         }
     }

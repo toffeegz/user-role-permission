@@ -11099,6 +11099,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -11111,7 +11139,9 @@ __webpack_require__.r(__webpack_exports__);
         name: null,
         description: null
       },
-      selectedId: null
+      selectedId: null,
+      error_status: null,
+      error_messages: null
     };
   },
   mounted: function mounted() {
@@ -11126,11 +11156,17 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var xy = this;
       axios.post('/api/roles', this.form).then(function (response) {
+        $('#newRoleModal').modal('hide');
         xy.roles.push(response.data.data);
         xy.form.name = null;
         xy.form.description = null;
       })["catch"](function (error) {
-        console.log(error);
+        console.log(error.response);
+
+        if (error.response) {
+          xy.error_messages = error.response.data.errors;
+          xy.error_status = error.response.data.message;
+        }
       });
     },
     remove: function remove(item, index) {
@@ -11143,7 +11179,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     edit: function edit(item) {
       var xy = this;
-      $('#editModal').modal('show');
+      $('#editRoleModal').modal('show');
       xy.formEdit.name = item.name;
       xy.formEdit.description = item.description;
       xy.selectedId = item.id;
@@ -11154,8 +11190,25 @@ __webpack_require__.r(__webpack_exports__);
         alert(response.data.message);
         location.reload();
       })["catch"](function (error) {
-        console.log(error);
+        console.log(error.response);
+
+        if (error.response) {
+          xy.error_messages = error.response.data.errors;
+          xy.error_status = error.response.data.message;
+        }
       });
+    },
+    openNewRoleModal: function openNewRoleModal() {
+      var xy = this;
+      xy.form.name = null;
+      xy.form.description = null;
+      $('#newRoleModal').modal('show');
+    },
+    closeEditRoleModal: function closeEditRoleModal() {
+      var xy = this;
+      $('#editRoleModal').modal('hide');
+      xy.error_messages = null;
+      xy.error_status = null;
     }
   }
 });
@@ -35916,7 +35969,24 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "card mb-4" }, [
-      _c("div", { staticClass: "card-header" }, [_vm._v("Manage Roles")]),
+      _c("div", { staticClass: "card-header d-flex justify-content-between" }, [
+        _c("span", [_vm._v("Manage Roles")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group d-flex justify-content-center" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary btn-sm",
+              on: {
+                click: function ($event) {
+                  return _vm.openNewRoleModal()
+                },
+              },
+            },
+            [_c("i", { staticClass: "fa-solid fa-plus" })]
+          ),
+        ]),
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "card-body" }, [
         _c("div", [
@@ -35970,82 +36040,6 @@ var render = function () {
               }),
               0
             ),
-            _vm._v(" "),
-            _c("tfoot", [
-              _c("tr", [
-                _c("td", [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.name,
-                          expression: "form.name",
-                        },
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Input role name" },
-                      domProps: { value: _vm.form.name },
-                      on: {
-                        input: function ($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "name", $event.target.value)
-                        },
-                      },
-                    }),
-                  ]),
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.description,
-                          expression: "form.description",
-                        },
-                      ],
-                      staticClass: "form-control",
-                      attrs: {
-                        type: "text",
-                        placeholder: "Input role description",
-                      },
-                      domProps: { value: _vm.form.description },
-                      on: {
-                        input: function ($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "description", $event.target.value)
-                        },
-                      },
-                    }),
-                  ]),
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "div",
-                    { staticClass: "form-group d-flex justify-content-center" },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary btn-sm",
-                          on: { click: _vm.submit },
-                        },
-                        [_c("i", { staticClass: "fa-solid fa-plus" })]
-                      ),
-                    ]
-                  ),
-                ]),
-              ]),
-            ]),
           ]),
         ]),
       ]),
@@ -36056,7 +36050,7 @@ var render = function () {
       {
         staticClass: "modal fade",
         attrs: {
-          id: "editModal",
+          id: "editRoleModal",
           tabindex: "-1",
           "aria-labelledby": "exampleModalLabel",
           "aria-hidden": "true",
@@ -36068,6 +36062,30 @@ var render = function () {
             _vm._m(1),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
+              _vm.error_messages
+                ? _c(
+                    "div",
+                    {
+                      staticClass: " alert alert-danger",
+                      attrs: { role: "alert" },
+                    },
+                    [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.error_status)),
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.error_messages, function (error_message) {
+                        return _c("div", { staticClass: "text-danger" }, [
+                          _c("small", [
+                            _c("i", [_vm._v(_vm._s(error_message[0]))]),
+                          ]),
+                        ])
+                      }),
+                    ],
+                    2
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _c("div", [
                 _c("div", { staticClass: "form-group mb-2" }, [
                   _c("label", { attrs: { for: "" } }, [_vm._v("Name")]),
@@ -36135,7 +36153,12 @@ var render = function () {
                 "button",
                 {
                   staticClass: "btn btn-secondary",
-                  attrs: { type: "button", "data-bs-dismiss": "modal" },
+                  attrs: { type: "button" },
+                  on: {
+                    click: function ($event) {
+                      return _vm.closeEditRoleModal()
+                    },
+                  },
                 },
                 [_vm._v("Close")]
               ),
@@ -36152,6 +36175,131 @@ var render = function () {
                   },
                 },
                 [_vm._v("Save changes")]
+              ),
+            ]),
+          ]),
+        ]),
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "newRoleModal",
+          tabindex: "-1",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true",
+        },
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _vm._m(2),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-body" }, [
+              _vm.error_messages
+                ? _c(
+                    "div",
+                    {
+                      staticClass: " alert alert-danger",
+                      attrs: { role: "alert" },
+                    },
+                    [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.error_status)),
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.error_messages, function (error_message) {
+                        return _c("div", { staticClass: "text-danger" }, [
+                          _c("small", [
+                            _c("i", [_vm._v(_vm._s(error_message[0]))]),
+                          ]),
+                        ])
+                      }),
+                    ],
+                    2
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", [
+                _c("div", { staticClass: "form-group mb-2" }, [
+                  _c("label", { attrs: { for: "" } }, [_vm._v("Name")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.name,
+                        expression: "form.name",
+                      },
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.form.name },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "name", $event.target.value)
+                      },
+                    },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "" } }, [_vm._v("Description")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.description,
+                        expression: "form.description",
+                      },
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.form.description },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "description", $event.target.value)
+                      },
+                    },
+                  }),
+                ]),
+              ]),
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary",
+                  attrs: { type: "button", "data-bs-dismiss": "modal" },
+                },
+                [_vm._v("Close")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function ($event) {
+                      return _vm.submit()
+                    },
+                  },
+                },
+                [_vm._v("Save")]
               ),
             ]),
           ]),
@@ -36184,6 +36332,27 @@ var staticRenderFns = [
         "h5",
         { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
         [_vm._v("Edit Role")]
+      ),
+      _vm._v(" "),
+      _c("button", {
+        staticClass: "btn-close",
+        attrs: {
+          type: "button",
+          "data-bs-dismiss": "modal",
+          "aria-label": "Close",
+        },
+      }),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("New Role")]
       ),
       _vm._v(" "),
       _c("button", {
