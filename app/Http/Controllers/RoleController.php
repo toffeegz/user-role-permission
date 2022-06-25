@@ -69,9 +69,14 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(RoleRequest $roleRequest, Role $role)
     {
-        //
+        try {
+            $data = $role->update($roleRequest->all());
+            return response()->json(['message' => 'Role has been updated successfully', 'data' => $data]);
+        } catch(\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
     /**
